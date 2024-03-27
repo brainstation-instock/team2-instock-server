@@ -11,7 +11,7 @@ router
 .route('/')
 .get(inventoriesController.getInventories)
 .post(inventoriesController.addItem)
-.patch(inventoriesController.editItem);
+.put(inventoriesController.editItem);
 
 // GET a Single Inventory Item
 router.get('/:id', (req, res) => {
