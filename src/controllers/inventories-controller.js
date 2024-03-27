@@ -38,7 +38,7 @@ module.exports.editItem = async(req,res) => {
         res.json(updatedUser[0]);
     } catch(error) {
         res.status(500).json({
-            message: `Unable to update user with ID ${req.params.id}: ${error}`
+            message: `Unable to update item with ID ${req.params.id}: ${error}`
         })
     }
 };
