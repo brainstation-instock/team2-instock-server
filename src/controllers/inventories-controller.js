@@ -3,7 +3,7 @@ const knex = require('knex')(require('../../knexfile'));
 module.exports.getInventories = async(_req, res) => {
     
     const inventories = await knex('inventories');
-    res.json({warehouses});
+    res.json({inventories});
 }
 
 module.exports.addItem = async(req,res) => {
