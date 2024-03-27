@@ -8,9 +8,9 @@ module.exports.getInventories = async(_req, res) => {
 
 module.exports.addItem = async(req,res) => {
 
-    const result = await knex("user").insert(req.body);
+    const result = await knex("inventories").insert(req.body);
     const newItemId = result[0];
-    const createdItem = await("user").where({id: newItemId});
+    const createdItem = await("inventories").where({id: newItemId});
 
     res.status(201).json(createdItem);
 }
