@@ -1,14 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const warehousesController = require('../controllers/warehouses-controller');
 
 /*===============
     WAREHOUSES
 ================*/
 
 // GET All Warehouses
-router.get('/', (req, res) => {
-
-});
+router.get('/', warehousesController.getWarehouses);
 
 // GET a Single Warehouse
 router.get('/:id', (req, res) => {
