@@ -7,7 +7,9 @@ const warehousesController = require('../controllers/warehouses-controller');
 ================*/
 
 // GET All Warehouses
-router.get('/', warehousesController.getWarehouses);
+router
+.route('/')
+.get(warehousesController.getWarehouses);
 
 // GET a Single Warehouse
 router.get('/:id', (req, res) => {

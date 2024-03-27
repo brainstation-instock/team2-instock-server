@@ -7,9 +7,11 @@ const inventoriesController = require('../controllers/inventories-controller');
 =================*/
 
 // GET All Inventory items
-router.get('/', (req, res) => {
-
-});
+router
+.route('/')
+.get(inventoriesController.getInventories)
+.post(inventoriesController.addItem)
+.patch(inventoriesController.editItem);
 
 // GET a Single Inventory Item
 router.get('/:id', (req, res) => {
