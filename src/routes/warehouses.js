@@ -12,9 +12,7 @@ router
 .get(warehousesController.getWarehouses);
 
 // GET a Single Warehouse
-router.get('/:id', (req, res) => {
-
-});
+router.get('/:id', warehousesController.getWarehouseDetail);
 
 // GET All Inventories for a Single Warehouse
 router.get('/:id/inventories', (req, res) => {
