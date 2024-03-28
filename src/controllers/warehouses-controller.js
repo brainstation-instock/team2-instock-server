@@ -19,13 +19,12 @@ module.exports.getWarehouseDetail = async(req, res) => {
             });
         }
 
-        res.status(200).json(warehouse);
+        res.status(200).json(warehouse[0]);
         
     }
     catch(error){
         res.status(404).json({
             message: `Warehouse with ID: ${id} is not found`,
-            error: error
         });
     }
     
