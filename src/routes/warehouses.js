@@ -15,9 +15,7 @@ router
 router.get('/:id', warehousesController.getWarehouseDetail);
 
 // GET All Inventories for a Single Warehouse
-router.get('/:id/inventories', (req, res) => {
-
-});
+router.get('/:id/inventories', warehousesController.getSpecificInventories);
 
 // POST a Single Warehouse
 router.post('/', (req, res) => {
