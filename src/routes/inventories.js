@@ -14,9 +14,7 @@ router
 .put(inventoriesController.editItem);
 
 // GET a Single Inventory Item
-router.get('/:id', (req, res) => {
-
-});
+router.get('/:id', inventoriesController.getSingleItem);
 
 // POST a Single Inventory Item
 router.post('/', (req, res) => {
