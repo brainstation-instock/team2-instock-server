@@ -24,6 +24,14 @@ module.exports.addItem = async(req,res) => {
         })
     }
 
+    const warehouse = await knex("warehouses").where(id = req.body.warehouse_id)
+    
+    if(warehouse.length === 0){
+        return res.status(400).json({
+            message: "Warehouse id does not match any existing warehouse."
+        })
+    }
+
     try{
     const result = await knex("inventories").insert(req.body);
     const newItemId = result[0];
@@ -54,7 +62,15 @@ module.exports.editItem = async(req,res) => {
             message: 'Quantity must be a valid number!'
         })
     }
+
+    const warehouse = await knex("warehouses").where(id = req.body.warehouse_id)
     
+    if(warehouse.length === 0){
+        return res.status(400).json({
+            message: "Warehouse id does not match any existing warehouse."
+        })
+    }
+
     try {
         const rowsUpdated = await knex("inventories")
             .where({
