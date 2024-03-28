@@ -42,3 +42,28 @@ module.exports.editItem = async(req,res) => {
         })
     }
 };
+
+module.exports.getSingleItem = async(req, res) => {
+
+    const {id} = req.params;
+
+    try{
+        const item = await knex('inventories').where('id', id);
+
+        if(item.length === 0){
+            return res.status(404).json({
+                message: `Item with ID: ${id} is not found`
+            });
+        }
+
+        res.status(200).json(item[0]);
+        
+    }
+    catch(error){
+        res.status(404).json({
+            message: `Item with ID: ${id} is not found`,
+        });
+    }
+    
+};
+
