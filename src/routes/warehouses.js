@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const knex = require('knex')(require('../../knexfile'));
 const warehousesController = require('../controllers/warehouses-controller');
-const { v4: uuidv4 } = require("uuid");
+const { uuid } = require("uuid").v4;
 const fs = require("fs");
-const { error, log } = require('console');
+const { error } = require('console');
 
 /*===============
     WAREHOUSES
