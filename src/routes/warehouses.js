@@ -53,12 +53,6 @@ router.post('/', async (req, res) => {
         })
         
     }
-
-
-
-    
-
-
 // checking to make sure the entire form is filled out, if not you will get an 400 message 
 if (!req.body.warehouse_name ||
     !req.body.address || !req.body.city || !req.body.country ||!req.body.contact_name 
@@ -67,11 +61,6 @@ if (!req.body.warehouse_name ||
         message: 'All fields must be filled!'
     });
 }
-
-
-
-// we still need to validate phone number & email below
-
 
 
 try {
@@ -84,8 +73,6 @@ try {
    res.status(500).json(error)
 }
 });
-
-
 
 
 // EDIT a Single Warehouse
