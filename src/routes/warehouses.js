@@ -7,9 +7,6 @@ const fs = require("fs");
 const { error } = require('console');
 const knex = require('knex')(require('../../knexfile'));
 
-
-
-
 /*===============
     WAREHOUSES
 ================*/
@@ -28,7 +25,7 @@ router.get('/:id/inventories', warehousesController.getSpecificInventories);
 // POST a Single Warehouse
 router.post('/', async (req, res) => {
    
-
+// checking to make sure the entire form is filled out, if not you will get an 400 error message 
     function validateEmail(email) { //Validates the email address
         let emailRegex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
         return emailRegex.test(email);
@@ -53,12 +50,6 @@ router.post('/', async (req, res) => {
         
     }
 
-
-
-    
-
-
-// checking to make sure the entire form is filled out, if not you will get an 400 message 
 if (!req.body.warehouse_name ||
     !req.body.address || !req.body.city || !req.body.country ||!req.body.contact_name 
     ||!req.body.contact_position || !req.body.contact_phone || !req.body.contact_email ) {
@@ -67,12 +58,7 @@ if (!req.body.warehouse_name ||
     });
 }
 
-
-
 // we still need to validate phone number & email below
-
-
-
 try {
     const newWarehouse =  await knex("warehouses").insert(req.body)
     console.log(newWarehouse);
