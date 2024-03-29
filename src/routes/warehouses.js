@@ -6,9 +6,6 @@ const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 const { error, log } = require('console');
 
-
-
-
 /*===============
     WAREHOUSES
 ================*/
@@ -28,7 +25,6 @@ router.get('/:id/inventories', warehousesController.getSpecificInventories);
 
 // POST a Single Warehouse
 router.post('/', async (req, res) => {
-
     function validateEmail(email) { //Validates the email address
         let emailRegex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
         return emailRegex.test(email);
@@ -61,8 +57,6 @@ router.post('/', async (req, res) => {
         const newWarehouse = await knex("warehouses").insert(req.body)
         console.log(newWarehouse);
         res.json(newWarehouse)
-
-
     } catch (error) {
         res.status(500).json(error)
     }
