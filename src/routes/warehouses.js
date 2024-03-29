@@ -72,6 +72,34 @@ router.post('/', async (req, res) => {
 // EDIT a Single Warehouse
 router.put('/:id', async (req, res) => {
 
+    function validateEmail(email) { //Validates the email address
+        let emailRegex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        return emailRegex.test(email);
+    }
+
+    function validatePhone(phone) { //Validates the phone number
+        let phoneRegex = /([1]|[1]\s|[])(\d{3}|\(\d{3}\)|\d{3}\s|\d{3}[-]|\(\d{3}\)\s)(\d{3}|\d{3}\s|\d{3}[-])\d{4}$/; // Change this regex based on requirement
+        return phoneRegex.test(phone);
+    }
+    if (!validateEmail(req.body.contact_email)) {
+        return res.status(400).json({
+            message: 'Invald Email Bro!'
+        })
+    }
+
+    if (!validatePhone(req.body.contact_phone)) {
+        return res.status(400).json({
+            message: 'Invald Phone Number Bro!'
+        })
+    }
+    // checking to make sure the entire form is filled out, if not you will get an 400 message 
+    if (!req.body.warehouse_name ||
+        !req.body.address || !req.body.city || !req.body.country || !req.body.contact_name
+        || !req.body.contact_position || !req.body.contact_phone || !req.body.contact_email) {
+        return res.status(400).json({
+            message: 'All fields must be filled!'
+        })}
+
     const { id } = req.params;
     const newSingleWarehouse = req.body;
     
