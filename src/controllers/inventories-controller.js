@@ -20,13 +20,13 @@ module.exports.addItem = async(req,res) => {
         return /^-?\d+$/.test(str);
     }
 
-    if(isNumber(req.body.quantity)){
+    if(!isNumber(req.body.quantity)){
         return res.status(400).json({
             message: 'Quantity must be a valid number!'
         })
     }
 
-    const warehouse = await knex("warehouses").where(id = req.body.warehouse_id)
+    const warehouse = await knex("warehouses").where({id:req.body.warehouse_id})
     
     if(warehouse.length === 0){
         return res.status(400).json({
@@ -36,6 +36,7 @@ module.exports.addItem = async(req,res) => {
 
     try{
     const result = await knex("inventories").insert(req.body);
+
     const newItemId = result[0];
 
     const createdItem = await knex("inventories").where({id: newItemId});
@@ -66,7 +67,7 @@ module.exports.editItem = async(req,res) => {
         })
     }
 
-    const warehouse = await knex("warehouses").where(id = req.body.warehouse_id)
+    const warehouse = await knex("warehouses").where({id:req.body.warehouse_id})
     
     if(warehouse.length === 0){
         return res.status(400).json({
@@ -93,7 +94,7 @@ module.exports.editItem = async(req,res) => {
                 id: req.params.id
             });
         
-        res.json(updatedUser[0]);
+        res.json(updatedItem[0]);
     } catch(error) {
         res.status(500).json({
             message: `Unable to update item with ID ${req.params.id}: ${error}`
