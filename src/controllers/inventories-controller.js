@@ -61,7 +61,7 @@ module.exports.editItem = async(req,res) => {
         return /^-?\d+$/.test(str);
     }
 
-    if(isNumber(req.body.quantity)){
+    if(!isNumber(req.body.quantity)){
         return res.status(400).json({
             message: 'Quantity must be a valid number!'
         })
