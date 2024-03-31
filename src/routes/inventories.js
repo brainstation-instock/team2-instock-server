@@ -10,8 +10,7 @@ const inventoriesController = require('../controllers/inventories-controller');
 router
 .route('/')
 .get(inventoriesController.getInventories)
-.post(inventoriesController.addItem)
-.put(inventoriesController.editItem);
+.post(inventoriesController.addItem);
 
 // GET a Single Inventory Item
 router.get('/:id', inventoriesController.getSingleItem);
@@ -22,9 +21,9 @@ router.post('/', (req, res) => {
 });
 
 // EDIT a Single Inventory Item
-router.put('/:id', (req, res) => {
-
-});
+router
+.route('/:id')
+.put(inventoriesController.editItem);
 
 // DELETE a Single Warehouse
 router.delete('/:id', (req, res) => {
