@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const knex = require('knex')(require('../../knexfile'));
 const warehousesController = require('../controllers/warehouses-controller');
+const { uuid } = require("uuid").v4;
+const fs = require("fs");
+const { error } = require('console');
 
 /*===============
     WAREHOUSES
@@ -22,26 +25,33 @@ router.get('/:id/inventories', warehousesController.getSpecificInventories);
 
 // POST a Single Warehouse
 router.post('/', async (req, res) => {
-    function validateEmail(email) { //Validates the email address
-        let emailRegex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-        return emailRegex.test(email);
+    const email = req.body.contact_email
+    const emailRegex = /^[-!#$%&'*+\/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/
+    const phone = req.body.contact_phone
+    const phoneValidation = convertToPhone(phone)
+
+    if(!phoneValidation.isValid){
+        return res.json({error: "Phone is not Valid"})
     }
 
-    function validatePhone(phone) { //Validates the phone number
-        let phoneRegex = /([1]|[1]\s|[])(\d{3}|\(\d{3}\)|\d{3}\s|\d{3}[-]|\(\d{3}\)\s)(\d{3}|\d{3}\s|\d{3}[-])\d{4}$/; // Change this regex based on requirement
-        return phoneRegex.test(phone);
-    }
-    if (!validateEmail(req.body.contact_email)) {
-        return res.status(400).json({
-            message: 'Invald Email Bro!'
-        })
+    function isEmailValid(email) {
+        if (!email || !emailRegex.test(email)) {
+            return 'Invalid Email Bro!';
+        }
+
+        const parts = email.split("@");
+        if (parts[1].split(".").some(part => part.length > 63)) {
+            return 'Invalid Email Bro!';
+        }
+
+        return ''; // No error message means the email is valid
     }
 
-    if (!validatePhone(req.body.contact_phone)) {
-        return res.status(400).json({
-            message: 'Invald Phone Number Bro!'
-        })
+    const validationError = isEmailValid(email);
+    if (validationError) {
+        return res.status(400).json({ message: validationError });
     }
+
     // checking to make sure the entire form is filled out, if not you will get an 400 message 
     if (!req.body.warehouse_name ||
         !req.body.address || !req.body.city || !req.body.country || !req.body.contact_name
@@ -50,14 +60,72 @@ router.post('/', async (req, res) => {
             message: 'All fields must be filled!'
         });
     }
+
+    const newBody = {...req.body}
+    newBody.contact_phone = phoneValidation.output
+
+
     try {
-        const newWarehouse = await knex("warehouses").insert(req.body)
+        const newWarehouse = await knex("warehouses").insert(newBody)
         console.log(newWarehouse);
-        res.json(newWarehouse)
+        return res.status(200).json({
+            message: 'Kameron put this API in check.'
+        });
     } catch (error) {
         res.status(500).json(error)
     }
+
 });
+
+
+function convertToPhone(string) {
+    let output = '+';
+    let numberCount = 0;
+    let pointer = 0;
+    let isDashed = false;
+    let isFirstSpace = false;
+    let isSecondSpace = false;
+
+    if (string.length >= 10) {
+        output += '1 (';
+        numberCount++;
+        isFirstSpace = true;
+    }
+
+    while (pointer < string.length) {
+
+        const parsed = parseInt(string[pointer]);
+
+        if (parsed || parsed === 0) {
+            numberCount++;
+            output += string[pointer];
+        }
+        if (numberCount === 1 && !isFirstSpace) {
+            output += " (";
+            isFirstSpace = true;
+        }
+        if (numberCount === 4 && !isSecondSpace) {
+            output += ") ";
+            isSecondSpace = true;
+        }
+        if (numberCount === 7 && !isDashed) {
+            output += "-";
+            isDashed = true;
+        }
+
+        pointer++;
+    }
+    if (numberCount === 10 || numberCount === 11) {
+        return {
+            isValid: true,
+            output: output
+        }
+    }
+    return {
+        isValid: false,
+        output: output
+    };
+}
 
 
 // EDIT a Single Warehouse
@@ -89,11 +157,12 @@ router.put('/:id', async (req, res) => {
         || !req.body.contact_position || !req.body.contact_phone || !req.body.contact_email) {
         return res.status(400).json({
             message: 'All fields must be filled!'
-        })}
+        })
+    }
 
     const { id } = req.params;
     const newSingleWarehouse = req.body;
-    
+
 
     try {
         const editSingleWarehouse = await knex('warehouses').where({ id }).update(newSingleWarehouse);
@@ -112,18 +181,6 @@ router.put('/:id', async (req, res) => {
 });
 
 
-
-
-//     const {id} = req.params;
-//     const newSingleWarehouse = req.body;
-    
-    
-//     try {
-//         const editSingleWarehouse = await knex('warehouses').where({id:id}).update(newSingleWarehouse)
-//         res.status(200).json({updated: editSingleWarehouse})
-//     } catch (error) { res.status(404).json({message: "Record not found"})}
-
-// });
 
 // DELETE a Single Warehouse
 router.delete('/:id', async (req, res) => {
