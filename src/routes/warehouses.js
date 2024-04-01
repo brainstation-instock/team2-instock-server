@@ -36,7 +36,7 @@ router.post('/', async (req, res) => {
         }
 
         const parts = email.split("@");
-        if ( parts[1].split(".").some(part => part > 63)) {
+        if ( parts[1].split(".").some(part => part.length > 63)) {
             return 'Invalid Email Bro!';
         }
 
@@ -49,10 +49,27 @@ router.post('/', async (req, res) => {
     }
 
     // Email is valid, continue with your logic
-    return res.status(200).json({
-        message: 'Kameron put this API in check.'
-    });
-    
+   
+
+
+    // checking to make sure the entire form is filled out, if not you will get an 400 message 
+    if (!req.body.warehouse_name ||
+        !req.body.address || !req.body.city || !req.body.country || !req.body.contact_name
+        || !req.body.contact_position || !req.body.contact_phone || !req.body.contact_email) {
+        return res.status(400).json({
+            message: 'All fields must be filled!'
+        });
+    }
+    try {
+        const newWarehouse = await knex("warehouses").insert(req.body)
+        console.log(newWarehouse);
+        return res.status(200).json({
+            message: 'Kameron put this API in check.'
+        });
+    } catch (error) {
+        res.status(500).json(error)
+    }
+
 });
 
 // router.post('/', async (req, res) => {
@@ -96,21 +113,7 @@ router.post('/', async (req, res) => {
 
 
 
-    // checking to make sure the entire form is filled out, if not you will get an 400 message 
-    // if (!req.body.warehouse_name ||
-    //     !req.body.address || !req.body.city || !req.body.country || !req.body.contact_name
-    //     || !req.body.contact_position || !req.body.contact_phone || !req.body.contact_email) {
-    //     return res.status(400).json({
-    //         message: 'All fields must be filled!'
-    //     });
-    // }
-    // try {
-    //     const newWarehouse = await knex("warehouses").insert(req.body)
-    //     console.log(newWarehouse);
-    //     res.json(newWarehouse)
-    // } catch (error) {
-    //     res.status(500).json(error)
-    // }
+    
 
 
 
