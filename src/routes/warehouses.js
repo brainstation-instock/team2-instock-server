@@ -2,9 +2,6 @@ const express = require('express');
 const router = express.Router();
 const knex = require('knex')(require('../../knexfile'));
 const warehousesController = require('../controllers/warehouses-controller');
-const { uuid } = require("uuid").v4;
-const fs = require("fs");
-const { error } = require('console');
 
 /*===============
     WAREHOUSES
@@ -133,6 +130,7 @@ router.delete('/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
+        // Delete the warehouse
         const deleteRow = await knex('warehouses').where({ id: id }).delete(); // Delete the warehouse
         res.status(204)
 
