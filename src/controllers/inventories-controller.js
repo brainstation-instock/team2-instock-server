@@ -3,7 +3,8 @@ const knex = require('knex')(require('../../knexfile'));
 module.exports.getInventories = async(_req, res) => {
     
     const inventories = await knex('inventories')
-    .join("warehouses", "inventories.warehouse_id", "warehouses.id");
+    .join("warehouses", "inventories.warehouse_id", "warehouses.id")
+    .select('inventories.item_name', 'inventories.id', 'inventories.status', 'inventories.category', 'warehouses.warehouse_name', 'inventories.quantity');
     res.json({inventories});
 }
 
