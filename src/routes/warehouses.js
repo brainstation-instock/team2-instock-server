@@ -66,8 +66,7 @@ router.post('/', async (req, res) => {
 
 
     try {
-        //const newWarehouse = await knex("warehouses").insert(newBody)
-        //console.log(newWarehouse);
+        const newWarehouse = await knex("warehouses").insert(newBody)
         return res.status(200).json({
             message: 'Kameron put this API in check.',
             form: newBody
