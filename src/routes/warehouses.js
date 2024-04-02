@@ -66,10 +66,11 @@ router.post('/', async (req, res) => {
 
 
     try {
-        const newWarehouse = await knex("warehouses").insert(newBody)
-        console.log(newWarehouse);
+        //const newWarehouse = await knex("warehouses").insert(newBody)
+        //console.log(newWarehouse);
         return res.status(200).json({
-            message: 'Kameron put this API in check.'
+            message: 'Kameron put this API in check.',
+            form: newBody
         });
     } catch (error) {
         res.status(500).json(error)
@@ -79,52 +80,65 @@ router.post('/', async (req, res) => {
 
 
 function convertToPhone(string) {
-    let output = '+';
-    let numberCount = 0;
+    let numbers = '';
     let pointer = 0;
-    let isDashed = false;
-    let isFirstSpace = false;
-    let isSecondSpace = false;
+    let output = '';
 
-    if (string.length >= 10) {
-        output += '1 (';
-        numberCount++;
-        isFirstSpace = true;
-    }
-
-    while (pointer < string.length) {
-
+    while(pointer < string.length){
         const parsed = parseInt(string[pointer]);
-
-        if (parsed || parsed === 0) {
-            numberCount++;
-            output += string[pointer];
+        if(parsed || parsed === 0){
+            numbers += parsed;
         }
-        if (numberCount === 1 && !isFirstSpace) {
-            output += " (";
-            isFirstSpace = true;
-        }
-        if (numberCount === 4 && !isSecondSpace) {
-            output += ") ";
-            isSecondSpace = true;
-        }
-        if (numberCount === 7 && !isDashed) {
-            output += "-";
-            isDashed = true;
-        }
-
         pointer++;
     }
-    if (numberCount === 10 || numberCount === 11) {
+
+    if(numbers.length < 10 || numbers.length > 11){
         return {
-            isValid: true,
-            output: output
+            isValid: false,
+            output: string,
+            message: 'Must be 10 or 11 digits'
+        };
+    }
+
+    pointer = 0;
+
+    if(numbers.length === 10){
+        output += '+1 (';
+        while(pointer < numbers.length){
+            output += numbers[pointer];
+            if(pointer === 2){
+                output += ') ';
+            }
+            if(pointer === 5){
+                output += '-';
+            }
+            pointer++;
+        }
+    }
+    else{
+        output += '+';
+        while(pointer < numbers.length){
+            output += numbers[pointer];
+            
+            if(pointer === 0){
+                output += ' ('
+            }
+            
+            if(pointer === 3){
+                output += ') ';
+            }
+
+            if(pointer === 6){
+                output += '-';
+            }
+            pointer++;
         }
     }
     return {
-        isValid: false,
-        output: output
-    };
+        isValid: true,
+        message: 'Phone is Valid',
+        output
+    }
 }
 
 
