@@ -106,7 +106,6 @@ module.exports.editItem = async(req,res) => {
 module.exports.getSingleItem = async(req, res) => {
 
     const {id} = req.params;
-    console.log(id);
 
     try{
         const item = await knex('inventories').join('warehouses', 'inventories.warehouse_id', 'warehouses.id').where('inventories.id', id).select('inventories.id', 'warehouses.warehouse_name', 'inventories.item_name', 'inventories.description', 
