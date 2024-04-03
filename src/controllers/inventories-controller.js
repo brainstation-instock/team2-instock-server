@@ -117,7 +117,7 @@ module.exports.getSingleItem = async(req, res) => {
             });
         }
 
-        res.status(200).json(item);
+        res.status(200).json(item[0]);
         
     }
     catch(error){
